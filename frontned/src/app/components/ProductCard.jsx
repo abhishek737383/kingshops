@@ -24,7 +24,7 @@ export default function ProductCard({ name, price, size, imageUrls }) {
   };
 
   return (
-    <div className="group w-full bg-white rounded-3xl overflow-hidden shadow-md sm:shadow-lg transition-shadow hover:shadow-2xl">
+    <div className="group w-full bg-white rounded-3xl overflow-hidden shadow-md transition-shadow hover:shadow-lg">
       {/* Image Slider */}
       <div className="relative w-full aspect-square overflow-hidden">
         <div className="w-full h-full transform transition-transform duration-500 group-hover:scale-105">
@@ -53,7 +53,7 @@ export default function ProductCard({ name, price, size, imageUrls }) {
             >
               ›
             </button>
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex space-x-2">
+            <div className="absolute bottom-4 sm:bottom-5 left-1/2 -translate-x-1/2 flex space-x-2">
               {imageUrls.map((_, i) => (
                 <span
                   key={i}
@@ -68,7 +68,7 @@ export default function ProductCard({ name, price, size, imageUrls }) {
       </div>
 
       {/* Details & Order */}
-      <div className="p-4 sm:p-6">
+      <div className="p-4">
         <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">{name}</h3>
         <p className="mt-1 text-sm sm:text-base text-gray-600">
           Size: <span className="font-medium">{size}</span>
