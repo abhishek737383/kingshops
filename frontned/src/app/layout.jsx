@@ -15,9 +15,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title:       "TechSphere | Modern Electronics Store",
-  description: "Your premier destination for cutting-edge electronics and gadgets",
-  keywords:    "electronics, gadgets, tech, smartphones, laptops",
+  title:       "NovaShops | Trending Boys’ Shirts & Fashion",
+  description:
+    "NovaShops: Your destination for the latest trending shirts, tees, and fashion for boys. Shop stylish, high-quality apparel at unbeatable prices.",
+  keywords:
+    "NovaShops, boys fashion, trending shirts, boys tees, youth apparel, stylish shirts",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({ children }) {
