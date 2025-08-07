@@ -224,13 +224,15 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
           onSubmit={verifyKey}
           className="bg-white p-8 rounded-3xl shadow-xl w-full max-w-sm"
         >
-          <h2 className="text-2xl font-bold mb-6 text-center">Admin Login</h2>
+          <h2 className="text-2xl font-bold mb-6 text-center text-gray-900">
+            Admin Login
+          </h2>
           <input
             type="password"
             placeholder="Enter Secret Key"
             value={key}
             onChange={(e) => setKey(e.target.value)}
-            className="w-full p-4 border rounded-xl mb-4 focus:ring-2 focus:ring-indigo-400"
+            className="w-full p-4 border rounded-xl mb-4 focus:ring-2 focus:ring-indigo-400 placeholder-gray-500 text-gray-800"
             required
           />
           <button
@@ -248,7 +250,7 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
     <main className="min-h-screen bg-gray-50 py-12 px-6 lg:px-24 space-y-6">
       {/* Greeting & Logout */}
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl sm:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
           Welcome, Admin
         </h1>
         <button
@@ -263,7 +265,9 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Add New Product */}
         <div className="bg-white p-8 rounded-3xl shadow-xl">
-          <h2 className="text-2xl font-bold mb-6">Add New Product</h2>
+          <h2 className="text-2xl font-bold mb-6 text-gray-900">
+            Add New Product
+          </h2>
           <form onSubmit={handleProductSubmit} className="space-y-6">
             <input
               type="text"
@@ -271,7 +275,7 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+              className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-indigo-400 placeholder-gray-500 text-gray-800"
             />
             <input
               type="number"
@@ -279,7 +283,7 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
               value={price || ""}
               onChange={(e) => setPrice(+e.target.value)}
               required
-              className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+              className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-indigo-400 placeholder-gray-500 text-gray-800"
             />
             <input
               type="text"
@@ -287,7 +291,7 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
               value={size}
               onChange={(e) => setSize(e.target.value)}
               required
-              className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+              className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-indigo-400 placeholder-gray-500 text-gray-800"
             />
             <input
               type="file"
@@ -295,7 +299,7 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
               accept="image/*"
               onChange={(e) => setFiles(e.target.files)}
               required
-              className="w-full"
+              className="w-full text-gray-700"
             />
             <button
               type="submit"
@@ -309,25 +313,28 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
 
         {/* Payment Settings */}
         <div className="bg-white p-8 rounded-3xl shadow-xl">
-          <h2 className="text-2xl font-bold mb-6">Payment Settings</h2>
-          <div className="space-y-6">
+          <h2 className="text-2xl font-bold mb-6 text-gray-900">
+            Payment Settings
+          </h2>
+          <div className="space-y-6 text-gray-700">
             <label className="block">
-              <span>UPI ID</span>
+              <span className="text-gray-800">UPI ID</span>
               <input
+                placeholder="Enter UPI ID"
                 value={settings.upiId}
                 onChange={(e) =>
                   setSettings((s) => ({ ...s, upiId: e.target.value }))
                 }
-                className="w-full p-4 mt-1 border rounded-xl focus:ring-2 focus:ring-indigo-400"
+                className="w-full p-4 mt-1 border rounded-xl focus:ring-2 focus:ring-indigo-400 placeholder-gray-500 text-gray-800"
               />
             </label>
             <label className="block">
-              <span>Upload QR Code</span>
+              <span className="text-gray-800">Upload QR Code</span>
               <input
                 type="file"
                 accept="image/*"
                 onChange={handleQrChange}
-                className="w-full mt-1"
+                className="w-full mt-1 text-gray-700"
               />
             </label>
             {settings.qrCodeUrl && (
@@ -353,7 +360,9 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
 
       {/* Existing Products */}
       <section>
-        <h2 className="text-2xl font-bold mb-6 text-center">Existing Products</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-900">
+          Existing Products
+        </h2>
         {loadingP ? (
           <p className="text-center text-gray-500">Loading products…</p>
         ) : (
@@ -372,7 +381,9 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
                   />
                 </div>
                 <div className="p-6">
-                  <h3 className="text-lg font-semibold">{p.name}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {p.name}
+                  </h3>
                   <p className="mt-2 text-green-600">₹{p.price}</p>
                   <p className="mt-1 text-gray-500">Size: {p.size}</p>
                   <button
@@ -390,9 +401,13 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
 
       {/* Recent Orders & Payments */}
       <section className="space-y-12">
-        <h2 className="text-2xl font-bold text-center">Recent Orders & Payments</h2>
+        <h2 className="text-2xl font-bold text-center text-gray-900">
+          Recent Orders & Payments
+        </h2>
         {(loadingO || loadingPay) ? (
-          <p className="text-center text-gray-500">Loading orders & payments…</p>
+          <p className="text-center text-gray-500">
+            Loading orders & payments…
+          </p>
         ) : (
           <ul className="space-y-8">
             {orders.map((o) => {
@@ -404,7 +419,7 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
                 >
                   <div className="grid grid-cols-1 lg:grid-cols-2">
                     {/* Order Details */}
-                    <div className="p-6 border-b lg:border-b-0 lg:border-r">
+                    <div className="p-6 border-b lg:border-b-0 lg:border-r text-gray-700">
                       <div className="relative w-full h-52 mb-4">
                         <Image
                           src={o.image}
@@ -414,13 +429,27 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
                         />
                       </div>
                       <div className="mt-4 text-sm space-y-1">
-                        <p><strong>Customer:</strong> {o.fullName}</p>
-                        <p><strong>Contact:</strong> {o.contactNo}</p>
-                        <p><strong>City:</strong> {o.city}</p>
-                        <p><strong>State:</strong> {o.state}</p>
-                        <p><strong>Pincode:</strong> {o.pincode}</p>
-                        <p><strong>Address:</strong> {o.address}</p>
-                        <p className="text-green-600 mt-1">₹{o.price}</p>
+                        <p>
+                          <strong>Customer:</strong> {o.fullName}
+                        </p>
+                        <p>
+                          <strong>Contact:</strong> {o.contactNo}
+                        </p>
+                        <p>
+                          <strong>City:</strong> {o.city}
+                        </p>
+                        <p>
+                          <strong>State:</strong> {o.state}
+                        </p>
+                        <p>
+                          <strong>Pincode:</strong> {o.pincode}
+                        </p>
+                        <p>
+                          <strong>Address:</strong> {o.address}
+                        </p>
+                        <p className="text-green-600 mt-1">
+                          ₹{o.price}
+                        </p>
                         <p className="text-green-500 mt-1">
                           Size: {o.size}, Color: {o.color}
                         </p>
@@ -436,8 +465,9 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
                         📋
                       </button>
                     </div>
+
                     {/* Payment Details */}
-                    <div className="p-6 bg-gray-50 flex flex-col items-center justify-center">
+                    <div className="p-6 bg-gray-50 flex flex-col items-center justify-center text-gray-700">
                       {pay ? (
                         <>
                           <div className="relative w-32 h-32 mb-4">
@@ -448,13 +478,17 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
                               className="object-cover rounded-lg"
                             />
                           </div>
-                          <p><strong>Txn ID:</strong> {pay.transactionId}</p>
+                          <p>
+                            <strong>Txn ID:</strong> {pay.transactionId}
+                          </p>
                           <time className="text-xs text-gray-500 mt-1">
                             Paid on {new Date(pay.createdAt).toLocaleString()}
                           </time>
                         </>
                       ) : (
-                        <p className="text-gray-500"><em>No payment received yet.</em></p>
+                        <p className="text-gray-500">
+                          <em>No payment received yet.</em>
+                        </p>
                       )}
                     </div>
                   </div>
