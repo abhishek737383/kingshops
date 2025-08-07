@@ -15,13 +15,30 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title:       "NovaShops ",
+  title:       "NovaShops",
   description:
     "NovaShops: Your destination for the latest trending shirts, tees, and fashion for boys. Shop stylish, high-quality apparel at unbeatable prices.",
   keywords:
     "NovaShops, boys fashion, trending shirts, boys tees, youth apparel, stylish shirts",
   icons: {
-    icon: "/logo.png",
+    icon:      "/logo.png",
+    shortcut:  "/logo.png",
+    apple:     "/logo.png",
+  },
+  openGraph: {
+    title:       "NovaShops",
+    description:
+      "Discover NovaShops: fresh styles in boys’ shirts, tees, and fashion essentials. Shop now for exclusive deals!",
+    url:         "https://novashops.netlify.app",
+    images:      ["/logo.png"],
+    type:        "website",
+  },
+  twitter: {
+    card:        "summary_large_image",
+    title:       "NovaShops",
+    description:
+      "Shop the latest boys’ shirts & fashion at NovaShops. Quality apparel, fresh designs, great prices.",
+    images:      ["/logo.png"],
   },
 };
 
