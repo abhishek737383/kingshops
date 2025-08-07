@@ -7,24 +7,47 @@ import { useRouter } from "next/navigation";
 
 export default function ProductCard({ name, price, size, imageUrls }) {
   const [current, setCurrent] = useState(0);
+  const [loadingOrder, setLoadingOrder] = useState(false);
   const total = imageUrls.length;
   const router = useRouter();
 
-  const prev = () => setCurrent(c => (c === 0 ? total - 1 : c - 1));
-  const next = () => setCurrent(c => (c === total - 1 ? 0 : c + 1));
+  const prev = () => {
+    if (loadingOrder) return;
+    setCurrent(c => (c === 0 ? total - 1 : c - 1));
+  };
+  const next = () => {
+    if (loadingOrder) return;
+    setCurrent(c => (c === total - 1 ? 0 : c + 1));
+  };
 
   const handleOrder = () => {
+    if (loadingOrder) return;
+    setLoadingOrder(true);
+
+    // Build query params:
     const params = new URLSearchParams();
     params.set("name", name);
     params.set("price", price.toString());
     params.set("size", size);
     imageUrls.forEach(url => params.append("allImages", url));
     params.set("index", current.toString());
-    router.push(`/order?${params.toString()}`);
+
+    // A tiny delay so the user sees the overlay flash
+    setTimeout(() => {
+      router.push(`/order?${params.toString()}`);
+    }, 300);
   };
 
   return (
-    <div className="group bg-white rounded-3xl overflow-hidden shadow-lg transition-shadow hover:shadow-2xl">
+    <div className="relative group w-full bg-white rounded-3xl overflow-hidden shadow-lg transition-shadow hover:shadow-2xl">
+      {/* Loading overlay */}
+      {loadingOrder && (
+        <div className="absolute inset-0 bg-white/75 z-10 flex flex-col items-center justify-center">
+          <div className="w-10 h-10 border-4 border-gray-300 border-t-indigo-500 rounded-full animate-spin mb-4"></div>
+          <p className="text-gray-700 font-medium">Ordering…</p>
+        </div>
+      )}
+
       {/* Image Slider */}
       <div className="relative w-full aspect-square overflow-hidden">
         <div className="w-full h-full transform transition-transform duration-500 group-hover:scale-105">
@@ -33,7 +56,7 @@ export default function ProductCard({ name, price, size, imageUrls }) {
             alt={`${name} ${current + 1}`}
             fill
             className="object-cover"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            sizes="100vw"
           />
         </div>
 
@@ -41,19 +64,21 @@ export default function ProductCard({ name, price, size, imageUrls }) {
           <>
             <button
               onClick={prev}
-              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow"
+              disabled={loadingOrder}
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow disabled:opacity-50"
               aria-label="Previous"
             >
               ‹
             </button>
             <button
               onClick={next}
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow"
+              disabled={loadingOrder}
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow disabled:opacity-50"
               aria-label="Next"
             >
               ›
             </button>
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex space-x-2">
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
               {imageUrls.map((_, i) => (
                 <span
                   key={i}
@@ -78,9 +103,10 @@ export default function ProductCard({ name, price, size, imageUrls }) {
         </p>
         <button
           onClick={handleOrder}
-          className="mt-6 w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition"
+          disabled={loadingOrder}
+          className="mt-6 w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 disabled:opacity-50 transition"
         >
-          Order Now
+          {loadingOrder ? "Ordering…" : "Order Now"}
         </button>
       </div>
     </div>
