@@ -1,0 +1,49 @@
+/* styles/globals.css */
+
+/* 1. Tailwind v4 monolithic import */
+@import "tailwindcss";
+
+/* 2. Custom CSS variables (light & dark mode) */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+/* 3. Base resets & theme */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  scroll-behavior: smooth;
+}
+
+/* 4. Custom utilities & animations */
+@layer utilities {
+  @keyframes slide-down {
+    0%   { transform: translateY(-20px); opacity: 0; }
+    100% { transform: translateY(0);     opacity: 1; }
+  }
+  @keyframes slide-up {
+    0%   { transform: translateY(20px);  opacity: 0; }
+    100% { transform: translateY(0);     opacity: 1; }
+  }
+  .animate-slide-down { animation: slide-down 0.6s ease-out forwards; }
+  .animate-slide-up   { animation: slide-up   0.6s ease-out forwards; }
+
+  /* shortcuts for your CSS vars */
+  .bg-var   { background-color: var(--background); }
+  .text-var { color:            var(--foreground); }
+}
