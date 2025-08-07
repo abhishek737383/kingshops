@@ -1,5 +1,5 @@
 // app/page.jsx
-"use client";             // mark as a client component
+"use client";
 
 import React, { useEffect, useState } from "react";
 import ProductCard from "./components/ProductCard";
@@ -23,14 +23,14 @@ export default function Page() {
   }, []);
 
   return (
-    <main className="container mx-auto min-h-screen bg-gradient-to-b from-gray-100 to-white py-16 px-6 lg:px-12">
-      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 text-center mb-16">
+    <main className="mx-auto max-w-screen-xl min-h-screen bg-gradient-to-b from-gray-100 to-white py-10 px-4 sm:px-6 lg:px-12">
+      <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 text-center mb-12">
         Explore Our <span className="text-indigo-600">Premium Collection</span>
       </h1>
 
       {loading && (
         <div className="flex flex-col items-center space-y-4">
-          <div className="w-14 h-14 border-4 border-gray-300 border-t-indigo-500 rounded-full animate-spin"></div>
+          <div className="w-12 h-12 border-4 border-gray-300 border-t-indigo-500 rounded-full animate-spin"></div>
           <p className="text-gray-600">Loading products…</p>
         </div>
       )}
@@ -40,13 +40,13 @@ export default function Page() {
       )}
 
       {loading && !error && (
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 w-full">
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 w-full">
           {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
-            <div key={i} className="animate-pulse bg-white rounded-3xl shadow-lg p-6">
-              <div className="bg-gray-200 rounded-2xl w-full aspect-square mb-6"></div>
-              <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
-              <div className="h-5 bg-gray-200 rounded w-1/2 mb-2"></div>
-              <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+            <div key={i} className="animate-pulse bg-white rounded-3xl shadow-md p-4 sm:p-6">
+              <div className="bg-gray-200 rounded-2xl w-full aspect-square mb-4"></div>
+              <div className="h-5 bg-gray-200 rounded w-3/4 mb-3"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+              <div className="h-5 bg-gray-200 rounded w-1/3"></div>
             </div>
           ))}
         </div>
@@ -58,7 +58,7 @@ export default function Page() {
             No products available.
           </p>
         ) : (
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 w-full">
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 w-full">
             {products.map(p => (
               <ProductCard
                 key={p._id}
