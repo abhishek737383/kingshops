@@ -27,6 +27,7 @@ export default function ClientOrderForm() {
 
   const [current, setCurrent]       = useState(initialIdx);
   const total                       = images.length;
+
   const [form, setForm]             = useState<OrderForm>({
     fullName:  "",
     contactNo: "",
@@ -37,6 +38,7 @@ export default function ClientOrderForm() {
     size:      "",
     color:     "",
   });
+
   const [submitting, setSubmitting] = useState(false);
   const [error, setError]           = useState<string | null>(null);
 
@@ -120,7 +122,9 @@ export default function ClientOrderForm() {
                   <span
                     key={i}
                     className={`block w-3 h-3 rounded-full transition-colors ${
-                      i === current ? "bg-indigo-600" : "bg-white opacity-60"
+                      i === current
+                        ? "bg-indigo-600"
+                        : "bg-white opacity-60"
                     }`}
                   />
                 ))}
@@ -154,23 +158,54 @@ export default function ClientOrderForm() {
               value={(form as any)[name]}
               onChange={handleChange}
               placeholder={placeholder}
-              className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400"
+              className="
+                w-full
+                p-3 
+                border border-gray-300 
+                rounded-lg 
+                placeholder-gray-500 
+                focus:ring-2 focus:ring-indigo-400 
+                focus:outline-none
+                text-gray-900
+              "
             />
           ))}
+
           <textarea
             name="address"
             value={form.address}
             onChange={handleChange}
             placeholder="Full Address"
             rows={2}
-            className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 md:col-span-2"
+            className="
+              w-full
+              p-3 
+              border border-gray-300 
+              rounded-lg 
+              placeholder-gray-500 
+              focus:ring-2 focus:ring-indigo-400 
+              focus:outline-none
+              text-gray-900
+              md:col-span-2
+            "
           />
+
           <input
             name="color"
             value={form.color}
             onChange={handleChange}
             placeholder="Color"
-            className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 md:col-span-2"
+            className="
+              w-full
+              p-3 
+              border border-gray-300 
+              rounded-lg 
+              placeholder-gray-500 
+              focus:ring-2 focus:ring-indigo-400 
+              focus:outline-none
+              text-gray-900
+              md:col-span-2
+            "
           />
         </div>
 
@@ -179,7 +214,18 @@ export default function ClientOrderForm() {
         <button
           onClick={handleSubmit}
           disabled={submitting}
-          className="w-full bg-indigo-600 text-white py-4 rounded-xl text-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-50"
+          className="
+            w-full 
+            bg-indigo-600 
+            text-white 
+            py-4 
+            rounded-xl 
+            text-lg 
+            font-semibold 
+            hover:bg-indigo-700 
+            transition 
+            disabled:opacity-50
+          "
         >
           {submitting ? "Placing Order…" : "Confirm Order"}
         </button>
