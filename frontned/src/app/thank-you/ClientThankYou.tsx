@@ -6,12 +6,11 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { ClipboardDocumentIcon } from "@heroicons/react/24/outline";
 
 export default function ClientThankYou() {
-  const params   = useSearchParams();
-  const router   = useRouter();
-  const orderId  = params.get("orderId")     ?? "—";
-  const txnId    = params.get("txnId")       ?? "—";
+  const params  = useSearchParams();
+  const router  = useRouter();
+  const orderId = params.get("orderId")    ?? "—";
+  const txnId   = params.get("txnId")      ?? "—";
 
-  // Build your WhatsApp link
   const whatsappText = encodeURIComponent(
     `Hello! 👋\n` +
     `I just completed my payment.\n` +
@@ -21,22 +20,22 @@ export default function ClientThankYou() {
   );
   const whatsappUrl = `https://wa.me/919140726581?text=${whatsappText}`;
 
-  function copyToClipboard(text: string) {
+  const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     alert("Copied to clipboard!");
-  }
+  };
 
   return (
     <>
       {/* IDs Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {[
-          { label: "Order ID",        value: orderId },
-          { label: "Transaction ID",  value: txnId   },
+          { label: "Order ID",       value: orderId },
+          { label: "Transaction ID", value: txnId   },
         ].map(({ label, value }) => (
-          <div key={label} className="bg-gray-50 p-4 rounded-lg relative">
+          <div key={label} className="bg-white border border-gray-200 p-4 rounded-lg relative">
             <p className="text-sm text-gray-500">{label}</p>
-            <p className="font-mono mt-1">{value}</p>
+            <p className="font-mono mt-1 text-gray-900 break-all">{value}</p>
             <ClipboardDocumentIcon
               className="h-5 w-5 text-gray-400 absolute top-4 right-4 cursor-pointer hover:text-gray-600"
               onClick={() => copyToClipboard(value)}

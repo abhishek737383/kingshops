@@ -7,20 +7,42 @@ export const dynamic = "force-dynamic";
 
 export default function PaymentPage() {
   return (
-    <main className="min-h-screen bg-gray-50 flex items-start justify-center py-16 px-4">
-      <div className="bg-white rounded-3xl shadow-xl max-w-xl w-full p-8 space-y-8">
-        <h1 className="text-2xl font-bold text-gray-900 text-center">
-          Complete Your Payment
-        </h1>
+    <section className="relative bg-gray-50 dark:bg-gray-900">
+      {/* Top fade: gray-50 → transparent */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-gray-50 to-transparent dark:from-gray-900" />
 
-        <Suspense fallback={<p className="text-center">Loading payment form…</p>}>
-          <ClientPaymentForm />
-        </Suspense>
+      <main className="min-h-screen flex items-start justify-center py-16 px-4">
+        <div className="bg-white rounded-3xl shadow-xl max-w-xl w-full p-8 space-y-8">
+          {/* Page title */}
+          <h1 className="text-2xl font-bold text-gray-900 text-center">
+            Complete Your Payment
+          </h1>
 
-        <p className="text-center text-gray-600 text-sm">
-          Once we verify your payment, we’ll confirm your order.
-        </p>
-      </div>
-    </main>
+          {/* Quick Guide */}
+          <div className="bg-gray-100 p-4 rounded-lg space-y-2">
+            <p className="font-semibold text-gray-800">How to Pay</p>
+            <ul className="list-decimal list-inside text-gray-700 space-y-1">
+              <li>Copy the UPI ID or scan the QR code below.</li>
+              <li>Open your UPI app and send the exact amount.</li>
+              <li>Copy the transaction ID from your UPI app.</li>
+              <li>Paste the transaction ID and upload your screenshot.</li>
+            </ul>
+          </div>
+
+          {/* Payment form */}
+          <Suspense fallback={<p className="text-center">Loading payment form…</p>}>
+            <ClientPaymentForm />
+          </Suspense>
+
+          {/* Note */}
+          <p className="text-center text-gray-600 text-sm">
+            Once we verify your payment, we’ll confirm your order and send you a confirmation message.
+          </p>
+        </div>
+      </main>
+
+      {/* Bottom fade: gray-50 → transparent */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-gray-50 to-transparent dark:from-gray-900" />
+    </section>
   );
 }
