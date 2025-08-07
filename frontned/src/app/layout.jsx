@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
     >
       <body className="antialiased flex flex-col min-h-screen bg-white dark:bg-gray-900">
         <LayoutWrapper>
-          <main className="flex-grow w-full px-0 sm:px-2 md:px-4 lg:px-6 py-8 md:py-12">
+          <main className="flex-grow w-full px-0 sm:px-2 md:px-4 lg:px-6 py-0">
             {children}
           </main>
         </LayoutWrapper>

@@ -27,7 +27,7 @@ export default function ClientPaymentForm() {
   const [upiId, setUpiId]         = useState("");
   const [qrCodeUrl, setQrCodeUrl] = useState("");
 
-  // Fetch UPI settings at mount
+  // Fetch UPI settings
   useEffect(() => {
     fetch(`${BASE}/settings`)
       .then(res => res.json())
@@ -36,11 +36,11 @@ export default function ClientPaymentForm() {
         setQrCodeUrl(s.qrCodeUrl);
       })
       .catch(() => {
-        // optional error handling
+        /* optional error handling */
       });
   }, []);
 
-  // File picker logic
+  // File picker
   const fileInputRef = useRef<HTMLInputElement>(null);
   const openFilePicker = useCallback(() => {
     fileInputRef.current?.click();
@@ -100,10 +100,12 @@ export default function ClientPaymentForm() {
     <>
       {/* Step 1: UPI Info */}
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold">Step 1: Make Payment via UPI</h2>
+        <h2 className="text-lg font-semibold text-gray-900">
+          Step 1: Make Payment via UPI
+        </h2>
         <div className="flex flex-col sm:flex-row items-center gap-6">
           <div className="flex-1">
-            <p className="font-mono bg-gray-100 p-3 rounded text-center">
+            <p className="font-mono bg-gray-100 text-gray-900 p-3 rounded text-center">
               {upiId || "Loading UPI..."}
             </p>
             {upiId && (
@@ -126,7 +128,7 @@ export default function ClientPaymentForm() {
                 className="mx-auto"
               />
             ) : (
-              <p className="text-center text-gray-400">Loading QR code…</p>
+              <p className="text-center text-gray-500">Loading QR code…</p>
             )}
           </div>
         </div>
@@ -134,19 +136,32 @@ export default function ClientPaymentForm() {
 
       {/* Step 2: Transaction ID */}
       <section className="space-y-2">
-        <h2 className="text-lg font-semibold">Step 2: Enter Transaction ID</h2>
+        <h2 className="text-lg font-semibold text-gray-900">
+          Step 2: Enter Transaction ID
+        </h2>
         <input
           type="text"
           placeholder="Transaction ID"
           value={txnId}
           onChange={e => setTxnId(e.target.value)}
-          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400"
+          className="
+            w-full
+            p-3
+            border border-gray-300
+            rounded-lg
+            placeholder-gray-500
+            text-gray-900
+            focus:ring-2 focus:ring-indigo-400
+            focus:outline-none
+          "
         />
       </section>
 
       {/* Step 3: Screenshot Upload */}
       <section className="space-y-2">
-        <h2 className="text-lg font-semibold">Step 3: Upload Payment Screenshot</h2>
+        <h2 className="text-lg font-semibold text-gray-900">
+          Step 3: Upload Payment Screenshot
+        </h2>
         <input
           ref={fileInputRef}
           type="file"
@@ -156,9 +171,22 @@ export default function ClientPaymentForm() {
         />
         <div
           onClick={openFilePicker}
-          className={`cursor-pointer border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center transition hover:bg-indigo-50 ${
-            error && !screenshot ? "border-red-400" : "border-indigo-300"
-          }`}
+          className={`
+            cursor-pointer
+            border-2
+            border-dashed
+            rounded-xl
+            p-6
+            flex flex-col items-center justify-center
+            transition hover:bg-indigo-50
+            ${
+              error && !screenshot
+                ? "border-red-400"
+                : "border-indigo-300"
+            }
+            bg-white
+            text-gray-900
+          `}
         >
           {previewUrl ? (
             <img
@@ -194,7 +222,17 @@ export default function ClientPaymentForm() {
       <button
         onClick={handleSubmit}
         disabled={submitting}
-        className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition disabled:opacity-50"
+        className="
+          w-full
+          bg-green-600
+          text-white
+          py-3
+          rounded-lg
+          font-semibold
+          hover:bg-green-700
+          transition
+          disabled:opacity-50
+        "
       >
         {submitting ? "Submitting…" : "Submit Payment"}
       </button>

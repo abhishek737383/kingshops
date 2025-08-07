@@ -23,54 +23,62 @@ export default function Page() {
   }, []);
 
   return (
-    <main className="w-full min-h-screen bg-gradient-to-b from-gray-100 to-white py-8 px-2 sm:px-4 md:px-6 lg:px-8">
-      <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 text-center mb-8">
-        Explore Our <span className="text-indigo-600">Premium Collection</span>
-      </h1>
+    <section className="relative bg-white dark:bg-gray-900">
+      {/* Top fade: white → transparent */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white to-transparent dark:from-gray-900" />
 
-      {loading && (
-        <div className="flex flex-col items-center space-y-4">
-          <div className="w-12 h-12 border-4 border-gray-300 border-t-indigo-500 rounded-full animate-spin"></div>
-          <p className="text-gray-600">Loading products…</p>
-        </div>
-      )}
+      <main className="w-full min-h-screen bg-gradient-to-b from-gray-100 to-white px-2 sm:px-4 md:px-6 lg:px-8 pt-8 pb-8">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 text-center mb-8">
+          Explore Our <span className="text-indigo-600">Premium Collection</span>
+        </h1>
 
-      {error && (
-        <p className="text-center text-red-500 mt-12">{error}</p>
-      )}
+        {loading && (
+          <div className="flex flex-col items-center space-y-4">
+            <div className="w-12 h-12 border-4 border-gray-300 border-t-indigo-500 rounded-full animate-spin"></div>
+            <p className="text-gray-600">Loading products…</p>
+          </div>
+        )}
 
-      {loading && !error && (
-        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 w-full">
-          {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
-            <div key={i} className="animate-pulse bg-white rounded-3xl shadow-md p-4">
-              <div className="bg-gray-200 rounded-2xl w-full aspect-square mb-4"></div>
-              <div className="h-5 bg-gray-200 rounded w-3/4 mb-3"></div>
-              <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-              <div className="h-5 bg-gray-200 rounded w-1/3"></div>
-            </div>
-          ))}
-        </div>
-      )}
+        {error && (
+          <p className="text-center text-red-500 mt-12">{error}</p>
+        )}
 
-      {!loading && !error && (
-        products.length === 0 ? (
-          <p className="text-center text-gray-600 mt-12">
-            No products available.
-          </p>
-        ) : (
+        {loading && !error && (
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 w-full">
-            {products.map(p => (
-              <ProductCard
-                key={p._id}
-                name={p.name}
-                price={p.price}
-                size={p.size}
-                imageUrls={p.imageUrls}
-              />
+            {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+              <div key={i} className="animate-pulse bg-white rounded-3xl shadow-md p-4">
+                <div className="bg-gray-200 rounded-2xl w-full aspect-square mb-4"></div>
+                <div className="h-5 bg-gray-200 rounded w-3/4 mb-3"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                <div className="h-5 bg-gray-200 rounded w-1/3"></div>
+              </div>
             ))}
           </div>
-        )
-      )}
-    </main>
+        )}
+
+        {!loading && !error && (
+          products.length === 0 ? (
+            <p className="text-center text-gray-600 mt-12">
+              No products available.
+            </p>
+          ) : (
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 w-full">
+              {products.map(p => (
+                <ProductCard
+                  key={p._id}
+                  name={p.name}
+                  price={p.price}
+                  size={p.size}
+                  imageUrls={p.imageUrls}
+                />
+              ))}
+            </div>
+          )
+        )}
+      </main>
+
+      {/* Bottom fade: white → transparent */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent dark:from-gray-900" />
+    </section>
   );
 }
