@@ -48,10 +48,10 @@ type Setting = {
   qrCodeUrl:  string;
 };
 
-// ─── CONFIG ────────────────────────────────────────────────────────────────────
+// ─── ENV ───────────────────────────────────────────────────────────────────────
 
 const BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
-const FRONTEND_SECRET = process.env.NEXT_PUBLIC_ADMIN_SECRET_KEY!;
+const ADMIN_KEY = process.env.NEXT_PUBLIC_ADMIN_SECRET_KEY!;
 
 // ─── COMPONENT ─────────────────────────────────────────────────────────────────
 
@@ -72,7 +72,7 @@ export default function AdminPage() {
       alert("Enter secret key");
       return;
     }
-    if (key === FRONTEND_SECRET) {
+    if (key === ADMIN_KEY) {
       localStorage.setItem("admin_auth", "true");
       setAuthorized(true);
     } else {
@@ -88,67 +88,40 @@ export default function AdminPage() {
 
   // — Data state —
   const [products, setProducts]     = useState<Product[]>([]);
-  const [loadingP, setLoadingP]     = useState(true);
-
-  const [orders, setOrders]         = useState<Order[]>([]);
-  const [loadingO, setLoadingO]     = useState(true);
-
+  const [orders,   setOrders]       = useState<Order[]>([]);
   const [payments, setPayments]     = useState<Payment[]>([]);
-  const [loadingPay, setLoadingPay] = useState(true);
-
   const [settings, setSettings]     = useState<Setting>({ upiId: "", qrCodeUrl: "" });
-  const [qrFile, setQrFile]         = useState<File | null>(null);
-  const [preview, setPreview]       = useState<string>("");
-  const [saving, setSaving]         = useState(false);
 
-  const [name, setName]             = useState("");
-  const [price, setPrice]           = useState<number>(0);
-  const [size, setSize]             = useState("");
-  const [files, setFiles]           = useState<FileList | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
-  const paymentsMap = payments.reduce<Record<string, Payment>>((acc, p) => {
-    acc[p.orderId] = p;
-    return acc;
-  }, {});
+  const [loadingP, setLoadingP]     = useState(true);
+  const [loadingO, setLoadingO]     = useState(true);
+  const [loadingPay, setLoadingPay] = useState(true);
 
   // — Fetch helpers —
   async function fetchProducts() {
     setLoadingP(true);
-    try {
-      const res = await fetch(`${BASE}/products`);
-      setProducts(await res.json());
-    } finally {
-      setLoadingP(false);
-    }
+    const res = await fetch(`${BASE}/products`);
+    setProducts(await res.json());
+    setLoadingP(false);
   }
+
   async function fetchOrders() {
     setLoadingO(true);
-    try {
-      const res = await fetch(`${BASE}/orders`);
-      setOrders(await res.json());
-    } finally {
-      setLoadingO(false);
-    }
+    const res = await fetch(`${BASE}/orders`);
+    setOrders(await res.json());
+    setLoadingO(false);
   }
+
   async function fetchPayments() {
     setLoadingPay(true);
-    try {
-      const res = await fetch(`${BASE}/payments`);
-      setPayments(await res.json());
-    } finally {
-      setLoadingPay(false);
-    }
+    const res = await fetch(`${BASE}/payments`);
+    setPayments(await res.json());
+    setLoadingPay(false);
   }
+
   async function fetchSettings() {
-    try {
-      const res = await fetch(`${BASE}/settings`);
-      const data: Setting = await res.json();
-      setSettings(data);
-      setPreview(data.qrCodeUrl);
-    } catch {}
+    const res  = await fetch(`${BASE}/settings`);
+    const data = await res.json();
+    setSettings(data);
   }
 
   useEffect(() => {
@@ -160,30 +133,37 @@ export default function AdminPage() {
     }
   }, [authorized]);
 
-  // — Form handlers —
+  // — Product handlers —
+  const [name, setName]             = useState("");
+  const [price, setPrice]           = useState<number>(0);
+  const [size, setSize]             = useState("");
+  const [files, setFiles]           = useState<FileList | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
   async function handleProductSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!files?.length) { alert("Select images"); return; }
+    if (!files?.length) {
+      alert("Select images");
+      return;
+    }
     const form = new FormData();
     form.append("name", name);
     form.append("price", price.toString());
     form.append("size", size);
-    Array.from(files).forEach(f => form.append("images", f));
+    Array.from(files).forEach((f) => form.append("images", f));
 
     setSubmitting(true);
-    try {
-      const res = await fetch(`${BASE}/products`, {
-        method: "POST",
-        body:  form,
-      });
-      if (!res.ok) throw new Error("Upload failed");
-      setName(""); setPrice(0); setSize(""); setFiles(null);
-      await fetchProducts();
-    } catch (err: any) {
-      alert(err.message || "An error occurred");
-    } finally {
-      setSubmitting(false);
+    const res = await fetch(`${BASE}/products`, { method: "POST", body: form });
+    if (!res.ok) {
+      alert("Upload failed");
+    } else {
+      setName("");
+      setPrice(0);
+      setSize("");
+      setFiles(null);
+      fetchProducts();
     }
+    setSubmitting(false);
   }
 
   async function handleDeleteProduct(id: string) {
@@ -192,51 +172,48 @@ export default function AdminPage() {
     fetchProducts();
   }
 
+  // — Settings handlers —
+  const [qrFile, setQrFile] = useState<File | null>(null);
+  const [saving, setSaving] = useState(false);
+
   function handleQrChange(e: ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0] ?? null;
-    setQrFile(file);
-    if (file) setPreview(URL.createObjectURL(file));
+    setQrFile(e.target.files?.[0] || null);
   }
 
   async function saveSettings() {
     setSaving(true);
-    try {
-      const form = new FormData();
-      form.append("upiId", settings.upiId);
-      if (qrFile) form.append("qrCode", qrFile);
-
-      const res = await fetch(`${BASE}/settings`, {
-        method: "PUT",
-        body:   form,
-      });
-      if (!res.ok) throw new Error("Save failed");
-      const updated: Setting = await res.json();
+    const form = new FormData();
+    form.append("upiId", settings.upiId);
+    if (qrFile) form.append("qrCode", qrFile);
+    const res = await fetch(`${BASE}/settings`, { method: "PUT", body: form });
+    if (!res.ok) {
+      alert("Save failed");
+    } else {
+      const updated = await res.json();
       setSettings(updated);
-      setPreview(updated.qrCodeUrl);
       alert("Settings saved");
-    } catch (err: any) {
-      alert(err.message || "An error occurred");
-    } finally {
-      setSaving(false);
     }
+    setSaving(false);
   }
 
+  // — Copy order details —
   function copyOrder(o: Order) {
     const text = `
 Product: ${o.productName}
 Price: ₹${o.price}
 Customer: ${o.fullName}
 Contact: ${o.contactNo}
-City: ${o.city}
-State: ${o.state}
-Pincode: ${o.pincode}
-Size: ${o.size}
-Color: ${o.color}
-Address: ${o.address},
-
-Ordered at: ${new Date(o.createdAt).toLocaleString()}`;
+Address: ${o.address}, ${o.city}, ${o.state} – ${o.pincode}
+Size: ${o.size}, Color: ${o.color}
+Ordered at: ${new Date(o.createdAt).toLocaleString()}
+    `.trim();
     navigator.clipboard.writeText(text).then(() => alert("Copied!"));
   }
+
+  const paymentsMap = payments.reduce<Record<string, Payment>>((acc, p) => {
+    acc[p.orderId] = p;
+    return acc;
+  }, {});
 
   // ─── RENDER ──────────────────────────────────────────────────────────────────
 
@@ -252,7 +229,7 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}`;
             type="password"
             placeholder="Enter Secret Key"
             value={key}
-            onChange={e => setKey(e.target.value)}
+            onChange={(e) => setKey(e.target.value)}
             className="w-full p-4 border rounded-xl mb-4 focus:ring-2 focus:ring-indigo-400"
             required
           />
@@ -282,7 +259,7 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}`;
         </button>
       </div>
 
-      {/* Row 1: Add Product & Settings */}
+      {/* Add Product & Payment Settings */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Add New Product */}
         <div className="bg-white p-8 rounded-3xl shadow-xl">
@@ -292,7 +269,7 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}`;
               type="text"
               placeholder="Name"
               value={name}
-              onChange={e => setName(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
               required
               className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-indigo-400"
             />
@@ -300,7 +277,7 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}`;
               type="number"
               placeholder="Price"
               value={price || ""}
-              onChange={e => setPrice(+e.target.value)}
+              onChange={(e) => setPrice(+e.target.value)}
               required
               className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-indigo-400"
             />
@@ -308,7 +285,7 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}`;
               type="text"
               placeholder="Size"
               value={size}
-              onChange={e => setSize(e.target.value)}
+              onChange={(e) => setSize(e.target.value)}
               required
               className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-indigo-400"
             />
@@ -316,7 +293,7 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}`;
               type="file"
               multiple
               accept="image/*"
-              onChange={e => setFiles(e.target.files)}
+              onChange={(e) => setFiles(e.target.files)}
               required
               className="w-full"
             />
@@ -338,8 +315,8 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}`;
               <span>UPI ID</span>
               <input
                 value={settings.upiId}
-                onChange={e =>
-                  setSettings(s => ({ ...s, upiId: e.target.value }))
+                onChange={(e) =>
+                  setSettings((s) => ({ ...s, upiId: e.target.value }))
                 }
                 className="w-full p-4 mt-1 border rounded-xl focus:ring-2 focus:ring-indigo-400"
               />
@@ -353,10 +330,10 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}`;
                 className="w-full mt-1"
               />
             </label>
-            {preview && (
+            {settings.qrCodeUrl && (
               <div className="w-32 h-32 mx-auto relative">
                 <Image
-                  src={preview}
+                  src={settings.qrCodeUrl}
                   alt="QR preview"
                   fill
                   className="object-cover rounded-xl border"
@@ -374,22 +351,19 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}`;
         </div>
       </section>
 
-      {/* Row 2: Existing Products */}
+      {/* Existing Products */}
       <section>
         <h2 className="text-2xl font-bold mb-6 text-center">Existing Products</h2>
         {loadingP ? (
           <p className="text-center text-gray-500">Loading products…</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map(p => (
+            {products.map((p) => (
               <div
                 key={p._id}
                 className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition"
               >
-                <div
-                  className="relative w-full h-56 cursor-pointer"
-                  onClick={() => setSelectedImage(p.imageUrls[0])}
-                >
+                <div className="relative w-full h-56 cursor-pointer" onClick={() => {}}>
                   <Image
                     src={p.imageUrls[0]}
                     alt={p.name}
@@ -414,27 +388,24 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}`;
         )}
       </section>
 
-      {/* Row 3: Recent Orders & Payments */}
+      {/* Recent Orders & Payments */}
       <section className="space-y-12">
         <h2 className="text-2xl font-bold text-center">Recent Orders & Payments</h2>
         {(loadingO || loadingPay) ? (
           <p className="text-center text-gray-500">Loading orders & payments…</p>
         ) : (
           <ul className="space-y-8">
-            {orders.map(o => {
+            {orders.map((o) => {
               const pay = paymentsMap[o._id];
               return (
                 <li
                   key={o._id}
                   className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition"
-                >  
+                >
                   <div className="grid grid-cols-1 lg:grid-cols-2">
                     {/* Order Details */}
                     <div className="p-6 border-b lg:border-b-0 lg:border-r">
-                      <div
-                        className="relative w-full h-52 mb-4 cursor-pointer"
-                        onClick={() => setSelectedImage(o.image)}
-                      >
+                      <div className="relative w-full h-52 mb-4">
                         <Image
                           src={o.image}
                           alt={o.productName}
@@ -461,16 +432,15 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}`;
                         onClick={() => copyOrder(o)}
                         className="mt-4 bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition"
                         title="Copy order details"
-                      >📋</button>
+                      >
+                        📋
+                      </button>
                     </div>
                     {/* Payment Details */}
                     <div className="p-6 bg-gray-50 flex flex-col items-center justify-center">
                       {pay ? (
                         <>
-                          <div
-                            className="relative w-32 h-32 mb-4 cursor-pointer"
-                            onClick={() => setSelectedImage(pay.screenshotUrl)}
-                          >
+                          <div className="relative w-32 h-32 mb-4">
                             <Image
                               src={pay.screenshotUrl}
                               alt="Payment Screenshot"
@@ -494,20 +464,6 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}`;
           </ul>
         )}
       </section>
-
-      {/* Lightbox */}
-      {selectedImage && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4 cursor-pointer"
-          onClick={() => setSelectedImage(null)}
-        >
-          <img
-            src={selectedImage}
-            alt="Full view"
-            className="max-h-full max-w-full object-contain rounded-2xl shadow-2xl"
-          />
-        </div>
-      )}
     </main>
   );
 }
