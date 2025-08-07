@@ -23,8 +23,8 @@ export default function Page() {
   }, []);
 
   return (
-    <main className="mx-auto max-w-screen-xl min-h-screen bg-gradient-to-b from-gray-100 to-white py-10 px-4 sm:px-6 lg:px-12">
-      <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 text-center mb-12">
+    <main className="w-full min-h-screen bg-gradient-to-b from-gray-100 to-white py-8 px-2 sm:px-4 md:px-6 lg:px-8">
+      <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 text-center mb-8">
         Explore Our <span className="text-indigo-600">Premium Collection</span>
       </h1>
 
@@ -40,9 +40,9 @@ export default function Page() {
       )}
 
       {loading && !error && (
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 w-full">
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 w-full">
           {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
-            <div key={i} className="animate-pulse bg-white rounded-3xl shadow-md p-4 sm:p-6">
+            <div key={i} className="animate-pulse bg-white rounded-3xl shadow-md p-4">
               <div className="bg-gray-200 rounded-2xl w-full aspect-square mb-4"></div>
               <div className="h-5 bg-gray-200 rounded w-3/4 mb-3"></div>
               <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
@@ -58,7 +58,7 @@ export default function Page() {
             No products available.
           </p>
         ) : (
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 w-full">
+          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 w-full">
             {products.map(p => (
               <ProductCard
                 key={p._id}
