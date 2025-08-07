@@ -15,13 +15,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title:       "NovaShops | Trending Boys’ Shirts & Fashion",
+  title:       "NovaShops ",
   description:
     "NovaShops: Your destination for the latest trending shirts, tees, and fashion for boys. Shop stylish, high-quality apparel at unbeatable prices.",
   keywords:
     "NovaShops, boys fashion, trending shirts, boys tees, youth apparel, stylish shirts",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/logo.png",
   },
 };
 
