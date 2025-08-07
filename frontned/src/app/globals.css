@@ -21,18 +21,11 @@
 /* 3. Ensure the “notch” area is white and content sits at the very top */
 html {
   background-color: var(--background);
-  /* iOS <=12 */
-  padding-top: constant(safe-area-inset-top);
-  padding-left: constant(safe-area-inset-left);
-  padding-right: constant(safe-area-inset-right);
-  padding-bottom: constant(safe-area-inset-bottom);
-  /* iOS 13+ and Android */
-  padding-top: env(safe-area-inset-top);
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
+  padding-top:    env(safe-area-inset-top);
+  padding-right:  env(safe-area-inset-right);
   padding-bottom: env(safe-area-inset-bottom);
+  padding-left:   env(safe-area-inset-left);
 }
-
 body {
   height: 100%;
   margin: 0;
