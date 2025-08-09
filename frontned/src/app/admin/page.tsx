@@ -6,6 +6,7 @@ import React, {
   useEffect,
   ChangeEvent,
   FormEvent,
+  useCallback,
 } from "react";
 import Image from "next/image";
 
@@ -215,6 +216,53 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
     return acc;
   }, {});
 
+  // ─── LIGHTBOX / IMAGE VIEWER ────────────────────────────────────────────────
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+  const [lightboxAlt, setLightboxAlt] = useState<string | null>(null);
+
+  const openLightbox = useCallback((src: string, alt?: string) => {
+    setLightboxSrc(src);
+    setLightboxAlt(alt || "");
+    setLightboxOpen(true);
+  }, []);
+
+  const closeLightbox = useCallback(() => {
+    setLightboxOpen(false);
+    // small timeout to allow fade if you add animation later
+    setTimeout(() => {
+      setLightboxSrc(null);
+      setLightboxAlt(null);
+    }, 150);
+  }, []);
+
+  // prevent background scroll when open
+  useEffect(() => {
+    if (lightboxOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prev;
+      };
+    }
+  }, [lightboxOpen]);
+
+  // close on Esc
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape" && lightboxOpen) closeLightbox();
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightboxOpen, closeLightbox]);
+
+  // helper to download shown image
+  const downloadImage = useCallback((url?: string) => {
+    if (!url) return;
+    // open in new tab — browser handles saving
+    window.open(url, "_blank", "noopener");
+  }, []);
+
   // ─── RENDER ──────────────────────────────────────────────────────────────────
 
   if (!authorized) {
@@ -248,6 +296,55 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
 
   return (
     <main className="min-h-screen bg-gray-50 py-12 px-6 lg:px-24 space-y-6">
+      {/* LIGHTBOX MODAL */}
+      {lightboxOpen && lightboxSrc && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6"
+          role="dialog"
+          aria-modal="true"
+          onClick={(e) => {
+            // close when clicking outside the inner image box
+            if (e.target === e.currentTarget) closeLightbox();
+          }}
+        >
+          <div className="relative max-w-[92vw] max-h-[92vh] w-full">
+            {/* Close button */}
+            <button
+              onClick={closeLightbox}
+              className="absolute top-2 right-2 z-50 bg-white/90 text-gray-800 rounded-full p-2 shadow hover:bg-white"
+              aria-label="Close image"
+            >
+              ✕
+            </button>
+
+            {/* Download button */}
+            <button
+              onClick={() => downloadImage(lightboxSrc)}
+              className="absolute top-2 right-12 z-50 bg-white/90 text-gray-800 rounded-full p-2 shadow hover:bg-white"
+              aria-label="Open image in new tab"
+            >
+              ⤓
+            </button>
+
+            <div className="relative w-full h-[80vh]">
+              <Image
+                src={lightboxSrc}
+                alt={lightboxAlt || "Image"}
+                fill
+                unoptimized
+                className="object-contain"
+              />
+            </div>
+
+            {lightboxAlt && (
+              <div className="mt-3 text-center text-sm text-gray-200">
+                <p className="text-white/90">{lightboxAlt}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Greeting & Logout */}
       <div className="flex justify-between items-center">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
@@ -338,11 +435,12 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
               />
             </label>
             {settings.qrCodeUrl && (
-              <div className="w-32 h-32 mx-auto relative">
+              <div className="w-32 h-32 mx-auto relative cursor-pointer" onClick={() => openLightbox(settings.qrCodeUrl, "UPI QR Code")}>
                 <Image
                   src={settings.qrCodeUrl}
                   alt="QR preview"
                   fill
+                  unoptimized
                   className="object-cover rounded-xl border"
                 />
               </div>
@@ -372,11 +470,15 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
                 key={p._id}
                 className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition"
               >
-                <div className="relative w-full h-56 cursor-pointer" onClick={() => {}}>
+                <div
+                  className="relative w-full h-56 cursor-pointer"
+                  onClick={() => openLightbox(p.imageUrls[0], p.name)}
+                >
                   <Image
                     src={p.imageUrls[0]}
                     alt={p.name}
                     fill
+                    unoptimized
                     className="object-cover"
                   />
                 </div>
@@ -420,11 +522,15 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
                   <div className="grid grid-cols-1 lg:grid-cols-2">
                     {/* Order Details */}
                     <div className="p-6 border-b lg:border-b-0 lg:border-r text-gray-700">
-                      <div className="relative w-full h-52 mb-4">
+                      <div
+                        className="relative w-full h-52 mb-4 cursor-pointer"
+                        onClick={() => openLightbox(o.image, o.productName)}
+                      >
                         <Image
                           src={o.image}
                           alt={o.productName}
                           fill
+                          unoptimized
                           className="object-cover rounded-lg"
                         />
                       </div>
@@ -470,11 +576,15 @@ Ordered at: ${new Date(o.createdAt).toLocaleString()}
                     <div className="p-6 bg-gray-50 flex flex-col items-center justify-center text-gray-700">
                       {pay ? (
                         <>
-                          <div className="relative w-32 h-32 mb-4">
+                          <div
+                            className="relative w-32 h-32 mb-4 cursor-pointer"
+                            onClick={() => openLightbox(pay.screenshotUrl, `Payment for ${o.productName}`)}
+                          >
                             <Image
                               src={pay.screenshotUrl}
                               alt="Payment Screenshot"
                               fill
+                              unoptimized
                               className="object-cover rounded-lg"
                             />
                           </div>
