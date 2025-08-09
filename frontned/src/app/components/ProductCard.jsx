@@ -33,8 +33,8 @@ export default function ProductCard({ name, price, size, imageUrls }) {
     params.set("index", current.toString());
 
     // tiny delay so overlay is visible, then navigate to order page with fragment
-     setTimeout(() => {
-      router.push(`/order?${params.toString()}#order-top`);
+    setTimeout(() => {
+      router.push(`/order?${params.toString()}#order-form`);
     }, 250);
   };
 
