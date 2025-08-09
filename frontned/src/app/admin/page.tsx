@@ -204,8 +204,12 @@ Product: ${o.productName}
 Price: ₹${o.price}
 Customer: ${o.fullName}
 Contact: ${o.contactNo}
-Address: ${o.address}, ${o.city}, ${o.state} – ${o.pincode}
-Size: ${o.size}, Color: ${o.color}
+City: ${o.city}
+State ${o.state} 
+pincode ${o.pincode}
+Size: ${o.size}
+Color: ${o.color}
+Address: ${o.address}
 Ordered at: ${new Date(o.createdAt).toLocaleString()}
     `.trim();
     navigator.clipboard.writeText(text).then(() => alert("Copied!"));
