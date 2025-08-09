@@ -54,7 +54,7 @@ export default function ClientOrderForm() {
         const first = wrapperRef.current?.querySelector<HTMLInputElement | HTMLTextAreaElement>(
           "input, textarea, button"
         );
-        first?.focus();
+        first?.focus?.();
 
         // Clear fragment so refresh/back won't re-scroll
         history.replaceState(null, "", window.location.pathname + window.location.search);
@@ -104,7 +104,8 @@ export default function ClientOrderForm() {
       images.forEach(img => q.append("allImages", img));
       q.set("index", current.toString());
 
-      router.push(`/payment?${q.toString()}`);
+      // Navigate to payment page with fragment so it scrolls the payment form into view
+      router.push(`/payment?${q.toString()}#payment-form`);
     } catch (err: any) {
       setError(err.message);
     } finally {

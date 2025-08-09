@@ -27,6 +27,10 @@ export default function ClientPaymentForm() {
   const [upiId, setUpiId]         = useState("");
   const [qrCodeUrl, setQrCodeUrl] = useState("");
 
+  // Refs for scrolling/focus
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const txnInputRef = useRef<HTMLInputElement | null>(null);
+
   // Fetch UPI settings
   useEffect(() => {
     fetch(`${BASE}/settings`)
@@ -38,6 +42,19 @@ export default function ClientPaymentForm() {
       .catch(() => {
         /* optional error handling */
       });
+  }, []);
+
+  // If user arrived with #payment-form, scroll it into view and focus txn input
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.location.hash === "#payment-form" && wrapperRef.current) {
+      setTimeout(() => {
+        wrapperRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+        txnInputRef.current?.focus();
+        // Clear fragment so it doesn't trigger again on refresh/back
+        history.replaceState(null, "", window.location.pathname + window.location.search);
+      }, 80);
+    }
   }, []);
 
   // File picker
@@ -99,7 +116,7 @@ export default function ClientPaymentForm() {
   return (
     <>
       {/* Step 1: UPI Info */}
-      <section className="space-y-4">
+      <section ref={wrapperRef} id="payment-form" className="space-y-4">
         <h2 className="text-lg font-semibold text-gray-900">
           Step 1: Make Payment via UPI
         </h2>
@@ -135,11 +152,12 @@ export default function ClientPaymentForm() {
       </section>
 
       {/* Step 2: Transaction ID */}
-      <section className="space-y-2">
+      <section className="space-y-2 mt-6">
         <h2 className="text-lg font-semibold text-gray-900">
           Step 2: Enter Transaction ID
         </h2>
         <input
+          ref={txnInputRef}
           type="text"
           placeholder="Transaction ID"
           value={txnId}
@@ -158,7 +176,7 @@ export default function ClientPaymentForm() {
       </section>
 
       {/* Step 3: Screenshot Upload */}
-      <section className="space-y-2">
+      <section className="space-y-2 mt-6">
         <h2 className="text-lg font-semibold text-gray-900">
           Step 3: Upload Payment Screenshot
         </h2>
@@ -217,7 +235,7 @@ export default function ClientPaymentForm() {
         </div>
       </section>
 
-      {error && <p className="text-red-500 text-center">{error}</p>}
+      {error && <p className="text-red-500 text-center mt-4">{error}</p>}
 
       <button
         onClick={handleSubmit}
@@ -231,7 +249,7 @@ export default function ClientPaymentForm() {
           font-semibold
           hover:bg-green-700
           transition
-          disabled:opacity-50
+          disabled:opacity-50 mt-6
         "
       >
         {submitting ? "Submitting…" : "Submit Payment"}
