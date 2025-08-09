@@ -1,7 +1,7 @@
 // app/order/ClientOrderForm.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
 
@@ -41,6 +41,26 @@ export default function ClientOrderForm() {
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError]           = useState<string | null>(null);
+
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+
+  // If user navigated with #order-form, scroll it into view and focus first input
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.location.hash === "#order-form" && wrapperRef.current) {
+      // small delay so layout stabilizes, especially on mobile
+      setTimeout(() => {
+        wrapperRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+        const first = wrapperRef.current?.querySelector<HTMLInputElement | HTMLTextAreaElement>(
+          "input, textarea, button"
+        );
+        first?.focus();
+
+        // Clear fragment so refresh/back won't re-scroll
+        history.replaceState(null, "", window.location.pathname + window.location.search);
+      }, 80);
+    }
+  }, []);
 
   const prev = () => setCurrent(c => (c === 0 ? total - 1 : c - 1));
   const next = () => setCurrent(c => (c === total - 1 ? 0 : c + 1));
@@ -122,9 +142,7 @@ export default function ClientOrderForm() {
                   <span
                     key={i}
                     className={`block w-3 h-3 rounded-full transition-colors ${
-                      i === current
-                        ? "bg-indigo-600"
-                        : "bg-white opacity-60"
+                      i === current ? "bg-indigo-600" : "bg-white opacity-60"
                     }`}
                   />
                 ))}
@@ -135,7 +153,7 @@ export default function ClientOrderForm() {
       </div>
 
       {/* PRODUCT INFO & FORM */}
-      <div className="p-8 space-y-6">
+      <div ref={wrapperRef} id="order-form" className="p-8 space-y-6">
         <div className="space-y-1">
           <h1 className="text-3xl font-extrabold text-gray-900">{name}</h1>
           <p className="text-xl text-green-600 font-semibold">

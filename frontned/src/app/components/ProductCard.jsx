@@ -32,18 +32,18 @@ export default function ProductCard({ name, price, size, imageUrls }) {
     imageUrls.forEach(url => params.append("allImages", url));
     params.set("index", current.toString());
 
-    // A tiny delay so the user sees the overlay flash
+    // tiny delay so overlay is visible, then navigate to order page with fragment
     setTimeout(() => {
-      router.push(`/order?${params.toString()}`);
-    }, 300);
+      router.push(`/order?${params.toString()}#order-form`);
+    }, 250);
   };
 
   return (
     <div className="relative group w-full bg-white rounded-3xl overflow-hidden shadow-lg transition-shadow hover:shadow-2xl">
       {/* Loading overlay */}
       {loadingOrder && (
-        <div className="absolute inset-0 bg-white/75 z-10 flex flex-col items-center justify-center">
-          <div className="w-10 h-10 border-4 border-gray-300 border-t-indigo-500 rounded-full animate-spin mb-4"></div>
+        <div className="absolute inset-0 bg-white/80 z-20 flex flex-col items-center justify-center">
+          <div className="w-10 h-10 border-4 border-gray-300 border-t-indigo-500 rounded-full animate-spin mb-3"></div>
           <p className="text-gray-700 font-medium">Ordering…</p>
         </div>
       )}
